@@ -91,7 +91,7 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
         view.backgroundColor = .systemBackground
 
         let libraryLabel = UILabel()
-        libraryLabel.text = "Your Game Library"
+        libraryLabel.text = "Browse Game Library"
         libraryLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         libraryLabel.translatesAutoresizingMaskIntoConstraints = false
 
