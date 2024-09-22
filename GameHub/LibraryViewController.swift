@@ -1,10 +1,16 @@
 import UIKit
 import Alamofire
+import AlamofireImage
 
 struct Game: Codable {
     let id: Int
     let name: String
-    let category: Int
+    let url: String
+    let cover: Cover?
+}
+
+struct Cover: Codable {
+    let id: Int
     let url: String
 }
 
@@ -18,19 +24,64 @@ struct HTTPBodyEncoding: ParameterEncoding {
     }
 }
 
-class LibraryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class GameCell: UITableViewCell {
+    let gameImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    let nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupViews() {
+        contentView.addSubview(gameImageView)
+        contentView.addSubview(nameLabel)
+        
+        NSLayoutConstraint.activate([
+            gameImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            gameImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            gameImageView.widthAnchor.constraint(equalToConstant: 80),
+            gameImageView.heightAnchor.constraint(equalToConstant: 100),
+            
+            nameLabel.leadingAnchor.constraint(equalTo: gameImageView.trailingAnchor, constant: 16),
+            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        ])
+    }
+}
+
+class LibraryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
 
     private let tableView = UITableView()
+    private let searchBar = UISearchBar()
     private var games: [Game] = []
     private let activityIndicator = UIActivityIndicatorView(style: .large)
 
     private let clientID = "fhnvgqyhcufns125esnbjl1iqacqxy"
     private let accessToken = "mpfty6g3ugf1m2isb38p547j7v61x8"
 
+    private var searchWorkItem: DispatchWorkItem?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        fetchGames()
+        fetchPopularGames()
         
         // Adjust table view content inset to account for tab bar
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBarController?.tabBar.frame.height ?? 0, right: 0)
@@ -44,15 +95,21 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
         libraryLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         libraryLabel.translatesAutoresizingMaskIntoConstraints = false
 
+        searchBar.placeholder = "Search games"
+        searchBar.delegate = self
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "GameCell")
+        tableView.register(GameCell.self, forCellReuseIdentifier: "GameCell")
+        tableView.rowHeight = 120 // Adjusted row height
 
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.hidesWhenStopped = true
 
         view.addSubview(libraryLabel)
+        view.addSubview(searchBar)
         view.addSubview(tableView)
         view.addSubview(activityIndicator)
 
@@ -60,7 +117,11 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
             libraryLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             libraryLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-            tableView.topAnchor.constraint(equalTo: libraryLabel.bottomAnchor, constant: 20),
+            searchBar.topAnchor.constraint(equalTo: libraryLabel.bottomAnchor, constant: 10),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -70,7 +131,11 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
         ])
     }
 
-    private func fetchGames() {
+    private func fetchPopularGames() {
+        fetchGames(query: "fields id, name, url, cover.*; where category = 0 & (status = 0 | status = null) & cover != null; sort popularity desc; limit 50;")
+    }
+
+    private func fetchGames(query: String) {
         activityIndicator.startAnimating()
         
         let url = "https://api.igdb.com/v4/games"
@@ -80,10 +145,8 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
             "Client-ID": clientID,
             "Accept": "application/json"
         ]
-        
-        let body = "fields id, category, name, url; limit 20;"
 
-        AF.request(url, method: .post, parameters: [:], encoding: HTTPBodyEncoding(body: body), headers: headers)
+        AF.request(url, method: .post, parameters: [:], encoding: HTTPBodyEncoding(body: query), headers: headers)
             .validate()
             .responseDecodable(of: [Game].self) { [weak self] response in
                 self?.activityIndicator.stopAnimating()
@@ -99,6 +162,16 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
             }
     }
 
+    private func searchGames(with searchText: String) {
+        let query = """
+        search "\(searchText)";
+        fields id, name, url, cover.*;
+        where category = 0 & (status = 0 | status = null) & cover != null;
+        limit 50;
+        """
+        fetchGames(query: query)
+    }
+
     private func showAlert(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -112,11 +185,18 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "GameCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "GameCell", for: indexPath) as? GameCell else {
+            fatalError("Unable to dequeue GameCell")
+        }
+        
         let game = games[indexPath.row]
         
-        cell.textLabel?.text = game.name
-        cell.detailTextLabel?.text = "Category: \(game.category)"
+        cell.nameLabel.text = game.name
+        
+        if let coverURL = game.cover?.url {
+            let imageURL = "https:" + coverURL.replacingOccurrences(of: "t_thumb", with: "t_cover_small")
+            cell.gameImageView.af.setImage(withURL: URL(string: imageURL)!, placeholderImage: UIImage(systemName: "photo"))
+        }
         
         return cell
     }
@@ -128,5 +208,30 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
         print("Selected game: \(game.name), URL: \(game.url)")
         // Here you could open the game's URL or navigate to a detail view
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+    // MARK: - UISearchBarDelegate
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchWorkItem?.cancel()
+
+        if searchText.isEmpty {
+            fetchPopularGames()
+            return
+        }
+
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.searchGames(with: searchText)
+        }
+
+        searchWorkItem = workItem
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        fetchPopularGames()
     }
 }

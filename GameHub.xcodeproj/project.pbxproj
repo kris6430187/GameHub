@@ -47,6 +47,7 @@
 		01C4CD2C2C9ED83E0059DE1C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 01C4CD2B2C9ED83E0059DE1C /* GoogleService-Info.plist */; };
 		01C4CD2F2C9EEB4C0059DE1C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD2E2C9EEB4C0059DE1C /* Alamofire */; };
 		01C4CD312C9EEB4C0059DE1C /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD302C9EEB4C0059DE1C /* AlamofireDynamic */; };
+		01C4CD342C9F200E0059DE1C /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD332C9F200E0059DE1C /* AlamofireImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -85,6 +86,7 @@
 				01C4CCFB2C9EC34B0059DE1C /* FirebaseDatabase in Frameworks */,
 				01C4CD052C9EC34B0059DE1C /* FirebaseFunctionsCombine-Community in Frameworks */,
 				01C4CCF72C9EC34B0059DE1C /* FirebaseAuthCombine-Community in Frameworks */,
+				01C4CD342C9F200E0059DE1C /* AlamofireImage in Frameworks */,
 				01C4CD132C9EC34B0059DE1C /* FirebaseStorage in Frameworks */,
 				01C4CCED2C9EC34B0059DE1C /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				01C4CD032C9EC34B0059DE1C /* FirebaseFunctions in Frameworks */,
@@ -186,6 +188,7 @@
 				01C4CD292C9ED66D0059DE1C /* GoogleSignInSwift */,
 				01C4CD2E2C9EEB4C0059DE1C /* Alamofire */,
 				01C4CD302C9EEB4C0059DE1C /* AlamofireDynamic */,
+				01C4CD332C9F200E0059DE1C /* AlamofireImage */,
 			);
 			productName = GameHub;
 			productReference = 01C4CCD02C9EBD660059DE1C /* GameHub.app */;
@@ -219,6 +222,7 @@
 				01C4CCE92C9EC34B0059DE1C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				01C4CD262C9ED66D0059DE1C /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				01C4CD2D2C9EEB4C0059DE1C /* XCRemoteSwiftPackageReference "Alamofire" */,
+				01C4CD322C9F200E0059DE1C /* XCRemoteSwiftPackageReference "AlamofireImage" */,
 			);
 			productRefGroup = 01C4CCD12C9EBD660059DE1C /* Products */;
 			projectDirPath = "";
@@ -505,6 +509,14 @@
 				minimumVersion = 5.9.1;
 			};
 		};
+		01C4CD322C9F200E0059DE1C /* XCRemoteSwiftPackageReference "AlamofireImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/AlamofireImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -642,6 +654,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 01C4CD2D2C9EEB4C0059DE1C /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = AlamofireDynamic;
+		};
+		01C4CD332C9F200E0059DE1C /* AlamofireImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01C4CD322C9F200E0059DE1C /* XCRemoteSwiftPackageReference "AlamofireImage" */;
+			productName = AlamofireImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
