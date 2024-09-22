@@ -94,14 +94,14 @@ class LoginViewController: UIViewController {
 
     @objc private func loginTapped() {
         guard let email = emailTextField.text, let password = passwordTextField.text else { return }
-        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
                 print("Login error: \(error.localizedDescription)")
-                self.showAlert(title: "Error", message: error.localizedDescription)
+                self?.showAlert(title: "Error", message: error.localizedDescription)
                 return
             }
             // Navigate to the main app screen
-            self.navigateToMainApp()
+            self?.navigateToMainApp()
         }
     }
 
@@ -116,9 +116,9 @@ class LoginViewController: UIViewController {
             textField.placeholder = "Email"
             textField.keyboardType = .emailAddress
         }
-        let sendAction = UIAlertAction(title: "Send", style: .default) { _ in
+        let sendAction = UIAlertAction(title: "Send", style: .default) { [weak self] _ in
             if let email = alertController.textFields?.first?.text, !email.isEmpty {
-                self.sendPasswordReset(to: email)
+                self?.sendPasswordReset(to: email)
             }
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -128,13 +128,13 @@ class LoginViewController: UIViewController {
     }
 
     private func sendPasswordReset(to email: String) {
-        Auth.auth().sendPasswordReset(withEmail: email) { error in
+        Auth.auth().sendPasswordReset(withEmail: email) { [weak self] error in
             if let error = error {
                 print("Error sending password reset: \(error.localizedDescription)")
-                self.showAlert(title: "Error", message: error.localizedDescription)
+                self?.showAlert(title: "Error", message: error.localizedDescription)
                 return
             }
-            self.showAlert(title: "Success", message: "Password reset email sent.")
+            self?.showAlert(title: "Success", message: "Password reset email sent.")
         }
     }
 
@@ -143,7 +143,7 @@ class LoginViewController: UIViewController {
         let config = GIDConfiguration(clientID: clientID)
 
         GIDSignIn.sharedInstance.configuration = config
-        GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) { [weak self] signInResult, error in
             if let error = error {
                 print("Google Sign-In error: \(error.localizedDescription)")
                 return
@@ -159,7 +159,7 @@ class LoginViewController: UIViewController {
                     return
                 }
                 // Navigate to the main app screen
-                self.navigateToMainApp()
+                self?.navigateToMainApp()
             }
         }
     }
@@ -171,8 +171,8 @@ class LoginViewController: UIViewController {
     }
 
     private func navigateToMainApp() {
-        let mainTabBarController = MainTabBarController()
-        mainTabBarController.modalPresentationStyle = .fullScreen
-        present(mainTabBarController, animated: true, completion: nil)
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            sceneDelegate.showMainInterface()
+        }
     }
 }

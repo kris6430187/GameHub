@@ -1,9 +1,9 @@
 import UIKit
 import FirebaseAuth
 import FirebaseStorage
-import MessageUI
+import FirebaseFirestore
 
-class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate {
+class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -40,10 +40,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         return button
     }()
 
-    private let contactSupportButton: UIButton = {
+    private let submitFeedbackButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Contact Support", for: .normal)
-        button.addTarget(self, action: #selector(contactSupportTapped), for: .touchUpInside)
+        button.setTitle("Submit Feedback", for: .normal)
+        button.addTarget(self, action: #selector(submitFeedbackTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -61,12 +61,11 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         setupLayout()
         loadUserProfile()
 
-        // Add tap gesture to profile image view
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(changeProfilePicture))
         profileImageView.addGestureRecognizer(tapGesture)
 
-        // Set initial state of theme switch
-        themeSwitch.isOn = traitCollection.userInterfaceStyle == .dark
+        // Set switch based on the current theme
+        themeSwitch.isOn = ThemeManager.shared.currentTheme == .dark
     }
 
     private func setupLayout() {
@@ -74,7 +73,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         view.addSubview(nameLabel)
         view.addSubview(emailLabel)
         view.addSubview(logoutButton)
-        view.addSubview(contactSupportButton)
+        view.addSubview(submitFeedbackButton)
         view.addSubview(themeSwitch)
 
         NSLayoutConstraint.activate([
@@ -92,11 +91,11 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoutButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 30),
 
-            contactSupportButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            contactSupportButton.topAnchor.constraint(equalTo: logoutButton.bottomAnchor, constant: 20),
+            submitFeedbackButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            submitFeedbackButton.topAnchor.constraint(equalTo: logoutButton.bottomAnchor, constant: 20),
 
             themeSwitch.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            themeSwitch.topAnchor.constraint(equalTo: contactSupportButton.bottomAnchor, constant: 20)
+            themeSwitch.topAnchor.constraint(equalTo: submitFeedbackButton.bottomAnchor, constant: 20)
         ])
     }
 
@@ -105,7 +104,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         nameLabel.text = user.displayName ?? "No Name"
         emailLabel.text = user.email
 
-        // Load profile image from Firebase Storage or a default image
         if let photoURL = user.photoURL {
             URLSession.shared.dataTask(with: photoURL) { data, _, error in
                 if let data = data, error == nil {
@@ -178,38 +176,65 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     @objc private func logoutTapped() {
         do {
             try Auth.auth().signOut()
-            // Navigate back to the login screen
-            let loginVC = LoginViewController()
-            loginVC.modalPresentationStyle = .fullScreen
-            present(loginVC, animated: true, completion: nil)
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                let loginViewController = LoginViewController()
+                let navigationController = UINavigationController(rootViewController: loginViewController)
+                sceneDelegate.setRootViewController(navigationController)
+            }
         } catch {
             print("Error signing out: \(error.localizedDescription)")
+            showAlert(title: "Error", message: "Failed to sign out. Please try again.")
         }
     }
 
-    @objc private func contactSupportTapped() {
-        if MFMailComposeViewController.canSendMail() {
-            let mailComposeVC = MFMailComposeViewController()
-            mailComposeVC.mailComposeDelegate = self
-            mailComposeVC.setToRecipients(["support@example.com"])
-            mailComposeVC.setSubject("Support Request")
-            mailComposeVC.setMessageBody("Please describe your issue here.", isHTML: false)
-            present(mailComposeVC, animated: true, completion: nil)
-        } else {
-            showAlert(title: "Mail Not Configured", message: "Please configure your mail account to send emails.")
+    @objc private func submitFeedbackTapped() {
+        let alertController = UIAlertController(title: "Submit Feedback", message: "Please enter your feedback below:", preferredStyle: .alert)
+        
+        alertController.addTextField { textField in
+            textField.placeholder = "Your feedback here"
         }
+        
+        let submitAction = UIAlertAction(title: "Submit", style: .default) { [weak self] _ in
+            guard let feedback = alertController.textFields?.first?.text, !feedback.isEmpty else {
+                self?.showAlert(title: "Error", message: "Please enter your feedback.")
+                return
+            }
+            
+            self?.saveFeedbackToFirebase(feedback)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addAction(submitAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
-
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true, completion: nil)
+    
+    private func saveFeedbackToFirebase(_ feedback: String) {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            showAlert(title: "Error", message: "User not logged in.")
+            return
+        }
+        
+        let db = Firestore.firestore()
+        db.collection("feedback").addDocument(data: [
+            "userId": userId,
+            "feedback": feedback,
+            "timestamp": FieldValue.serverTimestamp()
+        ]) { error in
+            if let error = error {
+                print("Error saving feedback: \(error.localizedDescription)")
+                self.showAlert(title: "Error", message: "Failed to submit feedback. Please try again.")
+            } else {
+                self.showAlert(title: "Success", message: "Your feedback has been submitted. Thank you!")
+            }
+        }
     }
 
     @objc private func themeSwitchToggled() {
-        if themeSwitch.isOn {
-            overrideUserInterfaceStyle = .dark
-        } else {
-            overrideUserInterfaceStyle = .light
-        }
+        // Change theme using ThemeManager
+        ThemeManager.shared.currentTheme = themeSwitch.isOn ? .dark : .light
     }
 
     private func showAlert(title: String, message: String) {

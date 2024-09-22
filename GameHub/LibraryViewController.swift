@@ -7,21 +7,13 @@ struct Game: Codable {
     let name: String
     let url: String
     let cover: Cover?
+    let summary: String?
+    let first_release_date: Int?
 }
 
 struct Cover: Codable {
     let id: Int
-    let url: String
-}
-
-struct HTTPBodyEncoding: ParameterEncoding {
-    let body: String
-    
-    func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
-        var request = try urlRequest.asURLRequest()
-        request.httpBody = body.data(using: .utf8)
-        return request
-    }
+    let url: String?
 }
 
 class GameCell: UITableViewCell {
@@ -72,9 +64,6 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
     private let searchBar = UISearchBar()
     private var games: [Game] = []
     private let activityIndicator = UIActivityIndicatorView(style: .large)
-
-    private let clientID = "fhnvgqyhcufns125esnbjl1iqacqxy"
-    private let accessToken = "mpfty6g3ugf1m2isb38p547j7v61x8"
 
     private var searchWorkItem: DispatchWorkItem?
 
@@ -138,28 +127,18 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
     private func fetchGames(query: String) {
         activityIndicator.startAnimating()
         
-        let url = "https://api.igdb.com/v4/games"
-        
-        let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(accessToken)",
-            "Client-ID": clientID,
-            "Accept": "application/json"
-        ]
-
-        AF.request(url, method: .post, parameters: [:], encoding: HTTPBodyEncoding(body: query), headers: headers)
-            .validate()
-            .responseDecodable(of: [Game].self) { [weak self] response in
-                self?.activityIndicator.stopAnimating()
-                
-                switch response.result {
-                case .success(let games):
-                    self?.games = games
-                    self?.tableView.reloadData()
-                case .failure(let error):
-                    print("Error: \(error)")
-                    self?.showAlert(message: "Failed to fetch games. Please try again.")
-                }
+        IGDBService.shared.fetchGames(with: query) { [weak self] result in
+            self?.activityIndicator.stopAnimating()
+            
+            switch result {
+            case .success(let games):
+                self?.games = games
+                self?.tableView.reloadData()
+            case .failure(let error):
+                print("Error: \(error)")
+                self?.showAlert(message: "Failed to fetch games. Please try again.")
             }
+        }
     }
 
     private func searchGames(with searchText: String) {
@@ -205,8 +184,12 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let game = games[indexPath.row]
-        print("Selected game: \(game.name), URL: \(game.url)")
-        // Here you could open the game's URL or navigate to a detail view
+        if let url = URL(string: game.url) {
+            let webViewController = WebViewController(url: url)
+            navigationController?.pushViewController(webViewController, animated: true)
+        } else {
+            showAlert(message: "Invalid game URL")
+        }
         tableView.deselectRow(at: indexPath, animated: true)
     }
 

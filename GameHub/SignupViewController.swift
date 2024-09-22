@@ -8,6 +8,7 @@ class SignupViewController: UIViewController {
         textField.placeholder = "Email"
         textField.borderStyle = .roundedRect
         textField.autocapitalizationType = .none
+        textField.keyboardType = .emailAddress
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -33,6 +34,7 @@ class SignupViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupLayout()
+        title = "Sign Up"
     }
 
     private func setupLayout() {
@@ -55,20 +57,32 @@ class SignupViewController: UIViewController {
     }
 
     @objc private func signupTapped() {
-        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
-        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+        guard let email = emailTextField.text, !email.isEmpty,
+              let password = passwordTextField.text, !password.isEmpty else {
+            showAlert(title: "Error", message: "Please fill in all fields.")
+            return
+        }
+        
+        Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
                 print("Signup error: \(error.localizedDescription)")
+                self?.showAlert(title: "Error", message: error.localizedDescription)
                 return
             }
             // Navigate to the main app screen
-            self.navigateToMainApp()
+            self?.navigateToMainApp()
         }
     }
 
     private func navigateToMainApp() {
-        let mainTabBarController = MainTabBarController()
-        mainTabBarController.modalPresentationStyle = .fullScreen
-        present(mainTabBarController, animated: true, completion: nil)
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            sceneDelegate.showMainInterface()
+        }
+    }
+
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }

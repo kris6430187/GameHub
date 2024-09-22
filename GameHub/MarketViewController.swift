@@ -1,16 +1,23 @@
 import UIKit
 
-// Define a struct to match the JSON structure of the API response
+// Define structs to match the JSON structure of the API responses
 struct GameDeal: Decodable {
     let title: String
     let salePrice: String
     let normalPrice: String
-    let thumb: String // URL for the thumbnail image
+    let thumb: String
+    let storeID: String
+}
+
+struct Store: Decodable {
+    let storeID: String
+    let storeName: String
 }
 
 class MarketViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
 
     private var deals: [GameDeal] = []
+    private var stores: [Store] = []
     private let tableView = UITableView()
     private let searchBar = UISearchBar()
 
@@ -45,8 +52,30 @@ class MarketViewController: UIViewController, UITableViewDataSource, UITableView
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
-        // Initial fetch to display some deals
+        // Fetch stores and initial game deals
+        fetchStores()
         fetchGameDeals(query: nil)
+    }
+
+    func fetchStores() {
+        guard let url = URL(string: "https://www.cheapshark.com/api/1.0/stores") else { return }
+
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                print("Error fetching stores: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            do {
+                let stores = try JSONDecoder().decode([Store].self, from: data)
+                DispatchQueue.main.async {
+                    self.stores = stores
+                }
+            } catch {
+                print("Error decoding stores: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
     }
 
     func fetchGameDeals(query: String?) {
@@ -87,7 +116,8 @@ class MarketViewController: UIViewController, UITableViewDataSource, UITableView
             return UITableViewCell()
         }
         let deal = deals[indexPath.row]
-        cell.configure(with: deal)
+        let storeName = stores.first(where: { $0.storeID == deal.storeID })?.storeName ?? "Unknown Store"
+        cell.configure(with: deal, storeName: storeName)
         return cell
     }
 
@@ -103,6 +133,7 @@ class GameDealCell: UITableViewCell {
 
     let titleLabel = UILabel()
     let priceLabel = UILabel()
+    let storeLabel = UILabel()
     let gameImageView = UIImageView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -117,10 +148,12 @@ class GameDealCell: UITableViewCell {
     private func setupViews() {
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         priceLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        storeLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        storeLabel.textColor = .secondaryLabel
         gameImageView.contentMode = .scaleAspectFill
         gameImageView.clipsToBounds = true
 
-        let textStackView = UIStackView(arrangedSubviews: [titleLabel, priceLabel])
+        let textStackView = UIStackView(arrangedSubviews: [titleLabel, priceLabel, storeLabel])
         textStackView.axis = .vertical
         textStackView.spacing = 5
 
@@ -141,9 +174,10 @@ class GameDealCell: UITableViewCell {
         ])
     }
 
-    func configure(with deal: GameDeal) {
+    func configure(with deal: GameDeal, storeName: String) {
         titleLabel.text = deal.title
         priceLabel.text = "$\(deal.salePrice) (was $\(deal.normalPrice))"
+        storeLabel.text = "Store: \(storeName)"
         if let url = URL(string: deal.thumb) {
             // Load image asynchronously
             URLSession.shared.dataTask(with: url) { data, _, _ in

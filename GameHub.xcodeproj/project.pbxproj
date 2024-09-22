@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0184549D2CA079BC00E63F40 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0184549C2CA079BC00E63F40 /* ThemeManager.swift */; };
+		0184549F2CA07EBC00E63F40 /* IGDBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0184549E2CA07EBC00E63F40 /* IGDBService.swift */; };
 		01C4CCD42C9EBD660059DE1C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4CCD32C9EBD660059DE1C /* AppDelegate.swift */; };
 		01C4CCD62C9EBD660059DE1C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4CCD52C9EBD660059DE1C /* SceneDelegate.swift */; };
 		01C4CCDB2C9EBD660059DE1C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01C4CCD92C9EBD660059DE1C /* Main.storyboard */; };
@@ -48,9 +50,12 @@
 		01C4CD2F2C9EEB4C0059DE1C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD2E2C9EEB4C0059DE1C /* Alamofire */; };
 		01C4CD312C9EEB4C0059DE1C /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD302C9EEB4C0059DE1C /* AlamofireDynamic */; };
 		01C4CD342C9F200E0059DE1C /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD332C9F200E0059DE1C /* AlamofireImage */; };
+		01C67DD12CA06E7600655E35 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C67DD02CA06E7600655E35 /* WebViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0184549C2CA079BC00E63F40 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		0184549E2CA07EBC00E63F40 /* IGDBService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGDBService.swift; sourceTree = "<group>"; };
 		01C4CCD02C9EBD660059DE1C /* GameHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01C4CCD32C9EBD660059DE1C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		01C4CCD52C9EBD660059DE1C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -66,6 +71,7 @@
 		01C4CD222C9ECE140059DE1C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		01C4CD242C9ECE570059DE1C /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		01C4CD2B2C9ED83E0059DE1C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		01C67DD02CA06E7600655E35 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +146,9 @@
 				01C4CD202C9EC7D40059DE1C /* ProfileViewController.swift */,
 				01C4CD222C9ECE140059DE1C /* LoginViewController.swift */,
 				01C4CD242C9ECE570059DE1C /* SignupViewController.swift */,
+				01C67DD02CA06E7600655E35 /* WebViewController.swift */,
+				0184549C2CA079BC00E63F40 /* ThemeManager.swift */,
+				0184549E2CA07EBC00E63F40 /* IGDBService.swift */,
 			);
 			path = GameHub;
 			sourceTree = "<group>";
@@ -255,12 +264,15 @@
 				01C4CD252C9ECE570059DE1C /* SignupViewController.swift in Sources */,
 				01C4CD1B2C9EC7910059DE1C /* HomeViewController.swift in Sources */,
 				01C4CCD42C9EBD660059DE1C /* AppDelegate.swift in Sources */,
+				0184549F2CA07EBC00E63F40 /* IGDBService.swift in Sources */,
+				01C67DD12CA06E7600655E35 /* WebViewController.swift in Sources */,
 				01C4CD192C9EC71D0059DE1C /* MainTabBarController.swift in Sources */,
 				01C4CD1D2C9EC7AA0059DE1C /* LibraryViewController.swift in Sources */,
 				01C4CD232C9ECE140059DE1C /* LoginViewController.swift in Sources */,
 				01C4CCD62C9EBD660059DE1C /* SceneDelegate.swift in Sources */,
 				01C4CD212C9EC7D40059DE1C /* ProfileViewController.swift in Sources */,
 				01C4CD1F2C9EC7BE0059DE1C /* MarketViewController.swift in Sources */,
+				0184549D2CA079BC00E63F40 /* ThemeManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
