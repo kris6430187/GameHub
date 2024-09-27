@@ -5,35 +5,70 @@ import GoogleSignIn
 
 class LoginViewController: UIViewController {
 
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+
+    private let contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        // Set your app logo here
+        imageView.image = UIImage(named: "AppLogo")
+        return imageView
+    }()
+
     private let emailTextField: UITextField = {
         let textField = UITextField()
-        textField.borderStyle = .roundedRect
+        textField.borderStyle = .none
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 8
         textField.autocapitalizationType = .none
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        textField.leftViewMode = .always
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
 
     private let passwordTextField: UITextField = {
         let textField = UITextField()
-        textField.borderStyle = .roundedRect
+        textField.borderStyle = .none
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 8
         textField.isSecureTextEntry = true
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        textField.leftViewMode = .always
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
 
     private let loginButton: UIButton = {
         let button = UIButton(type: .system)
+        button.backgroundColor = .systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8
         button.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
     private let signupButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.addTarget(self, action: #selector(signupTapped), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+            let button = UIButton(type: .system)
+            button.backgroundColor = .systemGreen
+            button.setTitleColor(.white, for: .normal)
+            button.layer.cornerRadius = 8
+            button.addTarget(self, action: #selector(signupTapped), for: .touchUpInside)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            return button
+        }()
 
     private let forgotPasswordButton: UIButton = {
         let button = UIButton(type: .system)
@@ -44,6 +79,10 @@ class LoginViewController: UIViewController {
 
     private let googleSignInButton: UIButton = {
         let button = UIButton(type: .system)
+        button.backgroundColor = .white
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemGray4.cgColor
+        button.layer.cornerRadius = 8
         button.addTarget(self, action: #selector(googleSignInTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -54,13 +93,13 @@ class LoginViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setupLayout()
         
-        // Add observer for language changes
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(languageChanged),
                                                name: LanguageManager.languageChangedNotification,
                                                object: nil)
         
         updateLocalizedStrings()
+        setupKeyboardDismissal()
     }
     
     deinit {
@@ -68,34 +107,66 @@ class LoginViewController: UIViewController {
     }
 
     private func setupLayout() {
-        view.addSubview(emailTextField)
-        view.addSubview(passwordTextField)
-        view.addSubview(loginButton)
-        view.addSubview(signupButton)
-        view.addSubview(forgotPasswordButton)
-        view.addSubview(googleSignInButton)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        [logoImageView, emailTextField, passwordTextField, loginButton, signupButton, forgotPasswordButton, googleSignInButton].forEach { contentView.addSubview($0) }
 
         NSLayoutConstraint.activate([
-            emailTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emailTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -100),
-            emailTextField.widthAnchor.constraint(equalToConstant: 250),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            passwordTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+
+            logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
+            logoImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 120),
+            logoImageView.heightAnchor.constraint(equalToConstant: 120),
+
+            emailTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 40),
+            emailTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            emailTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            emailTextField.heightAnchor.constraint(equalToConstant: 50),
+
             passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
-            passwordTextField.widthAnchor.constraint(equalToConstant: 250),
+            passwordTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            passwordTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            passwordTextField.heightAnchor.constraint(equalToConstant: 50),
 
-            loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 20),
+            loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 30),
+            loginButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            loginButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            loginButton.heightAnchor.constraint(equalToConstant: 50),
 
-            signupButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            signupButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 10),
+            signupButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20),
+            signupButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            signupButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            signupButton.heightAnchor.constraint(equalToConstant: 50),
 
-            forgotPasswordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             forgotPasswordButton.topAnchor.constraint(equalTo: signupButton.bottomAnchor, constant: 10),
+            forgotPasswordButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
 
-            googleSignInButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            googleSignInButton.topAnchor.constraint(equalTo: forgotPasswordButton.bottomAnchor, constant: 20)
+            googleSignInButton.topAnchor.constraint(equalTo: forgotPasswordButton.bottomAnchor, constant: 30),
+            googleSignInButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            googleSignInButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            googleSignInButton.heightAnchor.constraint(equalToConstant: 50),
+            googleSignInButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40)
         ])
+    }
+
+    private func setupKeyboardDismissal() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     // MARK: - Localization

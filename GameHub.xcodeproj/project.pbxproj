@@ -48,7 +48,6 @@
 		01C4CD2A2C9ED66D0059DE1C /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD292C9ED66D0059DE1C /* GoogleSignInSwift */; };
 		01C4CD2C2C9ED83E0059DE1C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 01C4CD2B2C9ED83E0059DE1C /* GoogleService-Info.plist */; };
 		01C4CD2F2C9EEB4C0059DE1C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD2E2C9EEB4C0059DE1C /* Alamofire */; };
-		01C4CD312C9EEB4C0059DE1C /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD302C9EEB4C0059DE1C /* AlamofireDynamic */; };
 		01C4CD342C9F200E0059DE1C /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD332C9F200E0059DE1C /* AlamofireImage */; };
 		01C67DD12CA06E7600655E35 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C67DD02CA06E7600655E35 /* WebViewController.swift */; };
 		01CF302C2CA68FD400D5CF81 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01CF302E2CA68FD400D5CF81 /* Localizable.strings */; };
@@ -132,7 +131,6 @@
 				01C4CCF52C9EC34B0059DE1C /* FirebaseAuth in Frameworks */,
 				01C4CCEB2C9EC34B0059DE1C /* FirebaseAnalytics in Frameworks */,
 				01C4CCF32C9EC34B0059DE1C /* FirebaseAppDistribution-Beta in Frameworks */,
-				01C4CD312C9EEB4C0059DE1C /* AlamofireDynamic in Frameworks */,
 				01C4CCEF2C9EC34B0059DE1C /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				01C4CCF92C9EC34B0059DE1C /* FirebaseCrashlytics in Frameworks */,
 				01C4CCFB2C9EC34B0059DE1C /* FirebaseDatabase in Frameworks */,
@@ -280,7 +278,6 @@
 				01C4CD272C9ED66D0059DE1C /* GoogleSignIn */,
 				01C4CD292C9ED66D0059DE1C /* GoogleSignInSwift */,
 				01C4CD2E2C9EEB4C0059DE1C /* Alamofire */,
-				01C4CD302C9EEB4C0059DE1C /* AlamofireDynamic */,
 				01C4CD332C9F200E0059DE1C /* AlamofireImage */,
 			);
 			productName = GameHub;
@@ -876,11 +873,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 01C4CD2D2C9EEB4C0059DE1C /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		01C4CD302C9EEB4C0059DE1C /* AlamofireDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 01C4CD2D2C9EEB4C0059DE1C /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = AlamofireDynamic;
 		};
 		01C4CD332C9F200E0059DE1C /* AlamofireImage */ = {
 			isa = XCSwiftPackageProductDependency;

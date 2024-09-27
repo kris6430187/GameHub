@@ -3,25 +3,56 @@ import FirebaseAuth
 
 class SignupViewController: UIViewController {
 
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+
+    private let contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "AppLogo")
+        return imageView
+    }()
+
     private let emailTextField: UITextField = {
         let textField = UITextField()
-        textField.borderStyle = .roundedRect
+        textField.borderStyle = .none
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 8
         textField.autocapitalizationType = .none
         textField.keyboardType = .emailAddress
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        textField.leftViewMode = .always
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
 
     private let passwordTextField: UITextField = {
         let textField = UITextField()
-        textField.borderStyle = .roundedRect
+        textField.borderStyle = .none
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 8
         textField.isSecureTextEntry = true
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        textField.leftViewMode = .always
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
 
     private let signupButton: UIButton = {
         let button = UIButton(type: .system)
+        button.backgroundColor = .systemGreen
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8
         button.addTarget(self, action: #selector(signupTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -32,13 +63,13 @@ class SignupViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setupLayout()
         
-        // Add observer for language changes
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(languageChanged),
                                                name: LanguageManager.languageChangedNotification,
                                                object: nil)
         
         updateLocalizedStrings()
+        setupKeyboardDismissal()
     }
     
     deinit {
@@ -46,27 +77,44 @@ class SignupViewController: UIViewController {
     }
 
     private func setupLayout() {
-        view.addSubview(emailTextField)
-        view.addSubview(passwordTextField)
-        view.addSubview(signupButton)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        [logoImageView, emailTextField, passwordTextField, signupButton].forEach { contentView.addSubview($0) }
 
         NSLayoutConstraint.activate([
-            emailTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emailTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
-            emailTextField.widthAnchor.constraint(equalToConstant: 250),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            passwordTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+
+            logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
+            logoImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 120),
+            logoImageView.heightAnchor.constraint(equalToConstant: 120),
+
+            emailTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 40),
+            emailTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            emailTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            emailTextField.heightAnchor.constraint(equalToConstant: 50),
+
             passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
-            passwordTextField.widthAnchor.constraint(equalToConstant: 250),
+            passwordTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            passwordTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            passwordTextField.heightAnchor.constraint(equalToConstant: 50),
 
-            signupButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            signupButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 20)
+            signupButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 30),
+            signupButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            signupButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            signupButton.heightAnchor.constraint(equalToConstant: 50),
+            signupButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40)
         ])
-    }
-
-    // MARK: - Localization
-    @objc private func languageChanged() {
-        updateLocalizedStrings()
     }
 
     private func updateLocalizedStrings() {
@@ -74,6 +122,19 @@ class SignupViewController: UIViewController {
         passwordTextField.placeholder = LanguageManager.shared.localizedString(for: "Password")
         signupButton.setTitle(LanguageManager.shared.localizedString(for: "SignUp"), for: .normal)
         self.title = LanguageManager.shared.localizedString(for: "SignUp")
+    }
+
+    private func setupKeyboardDismissal() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
+    @objc private func languageChanged() {
+        updateLocalizedStrings()
     }
 
     @objc private func signupTapped() {
@@ -84,14 +145,12 @@ class SignupViewController: UIViewController {
             return
         }
         
-        // Validate email
         if !isValidEmail(email) {
             showAlert(title: LanguageManager.shared.localizedString(for: "Error"),
                       message: LanguageManager.shared.localizedString(for: "InvalidEmail"))
             return
         }
         
-        // Validate password
         if !isValidPassword(password) {
             showAlert(title: LanguageManager.shared.localizedString(for: "Error"),
                       message: LanguageManager.shared.localizedString(for: "InvalidPassword"))
@@ -104,7 +163,6 @@ class SignupViewController: UIViewController {
                 self?.showAlert(title: LanguageManager.shared.localizedString(for: "Error"), message: error.localizedDescription)
                 return
             }
-            // Navigate to the main app screen
             self?.navigateToMainApp()
         }
     }
@@ -121,8 +179,6 @@ class SignupViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    // MARK: - Validation
-    
     private func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
@@ -130,7 +186,6 @@ class SignupViewController: UIViewController {
     }
     
     private func isValidPassword(_ password: String) -> Bool {
-        // Password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number
         let passwordRegEx = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"
         let passwordPred = NSPredicate(format:"SELF MATCHES %@", passwordRegEx)
         return passwordPred.evaluate(with: password)
