@@ -1,4 +1,5 @@
 import UIKit
+import WebKit
 
 // Define structs to match the JSON structure of the API responses
 struct GameDeal: Decodable {
@@ -7,6 +8,7 @@ struct GameDeal: Decodable {
     let normalPrice: String
     let thumb: String
     let storeID: String
+    let metacriticLink: String?
 }
 
 struct Store: Decodable {
@@ -25,11 +27,27 @@ class MarketViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
 
+        setupUI()
+        fetchStores()
+        fetchGameDeals(query: nil)
+        
+        // Add observer for language changes
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(languageChanged),
+                                               name: LanguageManager.languageChangedNotification,
+                                               object: nil)
+        
+        updateLocalizedStrings()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    private func setupUI() {
         // Set up the search bar
         searchBar.delegate = self
-        searchBar.placeholder = "Search for a game"
         searchBar.translatesAutoresizingMaskIntoConstraints = false
-
         view.addSubview(searchBar)
 
         // Set up the table view
@@ -37,7 +55,6 @@ class MarketViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.delegate = self
         tableView.register(GameDealCell.self, forCellReuseIdentifier: GameDealCell.identifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-
         view.addSubview(tableView)
 
         // Layout constraints
@@ -51,10 +68,6 @@ class MarketViewController: UIViewController, UITableViewDataSource, UITableView
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-
-        // Fetch stores and initial game deals
-        fetchStores()
-        fetchGameDeals(query: nil)
     }
 
     func fetchStores() {
@@ -79,9 +92,9 @@ class MarketViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func fetchGameDeals(query: String?) {
-        var urlString = "https://www.cheapshark.com/api/1.0/deals"
+        var urlString = "https://www.cheapshark.com/api/1.0/deals?sortBy=Price&desc=0&onSale=1"
         if let query = query, !query.isEmpty {
-            urlString += "?title=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+            urlString += "&title=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
         }
         
         guard let url = URL(string: urlString) else { return }
@@ -105,6 +118,17 @@ class MarketViewController: UIViewController, UITableViewDataSource, UITableView
         task.resume()
     }
 
+    // MARK: - Localization
+    @objc private func languageChanged() {
+        updateLocalizedStrings()
+    }
+
+    private func updateLocalizedStrings() {
+        searchBar.placeholder = LanguageManager.shared.localizedString(for: "SearchForAGame")
+        self.title = LanguageManager.shared.localizedString(for: "Market")
+        tableView.reloadData()
+    }
+
     // MARK: - UITableViewDataSource
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -116,9 +140,35 @@ class MarketViewController: UIViewController, UITableViewDataSource, UITableView
             return UITableViewCell()
         }
         let deal = deals[indexPath.row]
-        let storeName = stores.first(where: { $0.storeID == deal.storeID })?.storeName ?? "Unknown Store"
+        let storeName = stores.first(where: { $0.storeID == deal.storeID })?.storeName ?? LanguageManager.shared.localizedString(for: "UnknownStore")
         cell.configure(with: deal, storeName: storeName)
         return cell
+    }
+
+    // MARK: - UITableViewDelegate
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let deal = deals[indexPath.row]
+        guard let metacriticLink = deal.metacriticLink, !metacriticLink.isEmpty else {
+            // Show an alert if there's no Metacritic link
+            let alert = UIAlertController(title: LanguageManager.shared.localizedString(for: "NoMetacriticLink"),
+                                          message: LanguageManager.shared.localizedString(for: "NoMetacriticLinkMessage"),
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: LanguageManager.shared.localizedString(for: "OK"), style: .default))
+            present(alert, animated: true)
+            return
+        }
+        
+        let fullMetacriticURL = "https://www.metacritic.com" + metacriticLink
+        guard let url = URL(string: fullMetacriticURL) else {
+            print("Invalid URL: \(fullMetacriticURL)")
+            return
+        }
+        
+        let webViewController = WebViewController(url: url)
+        navigationController?.pushViewController(webViewController, animated: true)
     }
 
     // MARK: - UISearchBarDelegate
@@ -176,8 +226,8 @@ class GameDealCell: UITableViewCell {
 
     func configure(with deal: GameDeal, storeName: String) {
         titleLabel.text = deal.title
-        priceLabel.text = "$\(deal.salePrice) (was $\(deal.normalPrice))"
-        storeLabel.text = "Store: \(storeName)"
+        priceLabel.text = String(format: LanguageManager.shared.localizedString(for: "PriceFormat"), deal.salePrice, deal.normalPrice)
+        storeLabel.text = String(format: LanguageManager.shared.localizedString(for: "StoreFormat"), storeName)
         if let url = URL(string: deal.thumb) {
             // Load image asynchronously
             URLSession.shared.dataTask(with: url) { data, _, _ in

@@ -13,7 +13,6 @@ class HomeViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Try these games"
         label.font = UIFont(name: "AvenirNext-Bold", size: 20) // Replace with your custom font
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -28,6 +27,16 @@ class HomeViewController: UIViewController {
         setupUI()
         fetchRandomVideo()
         fetchRandomGameCovers()
+        
+        // Add observer for language changes
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(languageChanged),
+                                               name: LanguageManager.languageChangedNotification,
+                                               object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - UI Setup
@@ -37,6 +46,7 @@ class HomeViewController: UIViewController {
         setupVideoPlayerContainer()
         setupTitleLabel()
         setupCollectionView()
+        updateLocalizedStrings()
     }
 
     private func setupLogoImageView() {
@@ -96,6 +106,16 @@ class HomeViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+
+    // MARK: - Localization
+    @objc private func languageChanged() {
+        updateLocalizedStrings()
+    }
+
+    private func updateLocalizedStrings() {
+        titleLabel.text = LanguageManager.shared.localizedString(for: "TryTheseGames")
+        self.title = LanguageManager.shared.localizedString(for: "Home")
     }
 
     // MARK: - API Calls

@@ -67,6 +67,13 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
 
     private var searchWorkItem: DispatchWorkItem?
 
+    private let libraryLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -74,17 +81,23 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
         
         // Adjust table view content inset to account for tab bar
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBarController?.tabBar.frame.height ?? 0, right: 0)
+        
+        // Add observer for language changes
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(languageChanged),
+                                               name: LanguageManager.languageChangedNotification,
+                                               object: nil)
+        
+        updateLocalizedStrings()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     private func setupUI() {
         view.backgroundColor = .systemBackground
 
-        let libraryLabel = UILabel()
-        libraryLabel.text = "Browse Game Library"
-        libraryLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        libraryLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        searchBar.placeholder = "Search games"
         searchBar.delegate = self
         searchBar.translatesAutoresizingMaskIntoConstraints = false
 
@@ -136,7 +149,7 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
                 self?.tableView.reloadData()
             case .failure(let error):
                 print("Error: \(error)")
-                self?.showAlert(message: "Failed to fetch games. Please try again.")
+                self?.showAlert(message: LanguageManager.shared.localizedString(for: "FetchGamesError"))
             }
         }
     }
@@ -152,9 +165,23 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
     }
 
     private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        let alert = UIAlertController(title: LanguageManager.shared.localizedString(for: "Error"),
+                                      message: message,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: LanguageManager.shared.localizedString(for: "OK"), style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+
+    // MARK: - Localization
+    @objc private func languageChanged() {
+        updateLocalizedStrings()
+    }
+
+    private func updateLocalizedStrings() {
+        libraryLabel.text = LanguageManager.shared.localizedString(for: "BrowseGameLibrary")
+        searchBar.placeholder = LanguageManager.shared.localizedString(for: "SearchGames")
+        self.title = LanguageManager.shared.localizedString(for: "Library")
+        tableView.reloadData()
     }
 
     // MARK: - UITableViewDataSource
@@ -188,7 +215,7 @@ class LibraryViewController: UIViewController, UITableViewDataSource, UITableVie
             let webViewController = WebViewController(url: url)
             navigationController?.pushViewController(webViewController, animated: true)
         } else {
-            showAlert(message: "Invalid game URL")
+            showAlert(message: LanguageManager.shared.localizedString(for: "InvalidGameURL"))
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }

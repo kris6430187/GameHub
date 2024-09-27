@@ -7,7 +7,6 @@ class LoginViewController: UIViewController {
 
     private let emailTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Email"
         textField.borderStyle = .roundedRect
         textField.autocapitalizationType = .none
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -16,7 +15,6 @@ class LoginViewController: UIViewController {
 
     private let passwordTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Password"
         textField.borderStyle = .roundedRect
         textField.isSecureTextEntry = true
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -25,7 +23,6 @@ class LoginViewController: UIViewController {
 
     private let loginButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Login", for: .normal)
         button.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -33,7 +30,6 @@ class LoginViewController: UIViewController {
 
     private let signupButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Sign Up", for: .normal)
         button.addTarget(self, action: #selector(signupTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -41,7 +37,6 @@ class LoginViewController: UIViewController {
 
     private let forgotPasswordButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Forgot Password?", for: .normal)
         button.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -49,7 +44,6 @@ class LoginViewController: UIViewController {
 
     private let googleSignInButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Sign in with Google", for: .normal)
         button.addTarget(self, action: #selector(googleSignInTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -59,6 +53,18 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupLayout()
+        
+        // Add observer for language changes
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(languageChanged),
+                                               name: LanguageManager.languageChangedNotification,
+                                               object: nil)
+        
+        updateLocalizedStrings()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     private func setupLayout() {
@@ -92,12 +98,27 @@ class LoginViewController: UIViewController {
         ])
     }
 
+    // MARK: - Localization
+    @objc private func languageChanged() {
+        updateLocalizedStrings()
+    }
+
+    private func updateLocalizedStrings() {
+        emailTextField.placeholder = LanguageManager.shared.localizedString(for: "Email")
+        passwordTextField.placeholder = LanguageManager.shared.localizedString(for: "Password")
+        loginButton.setTitle(LanguageManager.shared.localizedString(for: "Login"), for: .normal)
+        signupButton.setTitle(LanguageManager.shared.localizedString(for: "SignUp"), for: .normal)
+        forgotPasswordButton.setTitle(LanguageManager.shared.localizedString(for: "ForgotPassword"), for: .normal)
+        googleSignInButton.setTitle(LanguageManager.shared.localizedString(for: "SignInWithGoogle"), for: .normal)
+        self.title = LanguageManager.shared.localizedString(for: "Login")
+    }
+
     @objc private func loginTapped() {
         guard let email = emailTextField.text, let password = passwordTextField.text else { return }
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
                 print("Login error: \(error.localizedDescription)")
-                self?.showAlert(title: "Error", message: error.localizedDescription)
+                self?.showAlert(title: LanguageManager.shared.localizedString(for: "Error"), message: error.localizedDescription)
                 return
             }
             // Navigate to the main app screen
@@ -111,17 +132,19 @@ class LoginViewController: UIViewController {
     }
 
     @objc private func forgotPasswordTapped() {
-        let alertController = UIAlertController(title: "Reset Password", message: "Enter your email to receive password reset instructions.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: LanguageManager.shared.localizedString(for: "ResetPassword"),
+                                                message: LanguageManager.shared.localizedString(for: "EnterEmailForReset"),
+                                                preferredStyle: .alert)
         alertController.addTextField { textField in
-            textField.placeholder = "Email"
+            textField.placeholder = LanguageManager.shared.localizedString(for: "Email")
             textField.keyboardType = .emailAddress
         }
-        let sendAction = UIAlertAction(title: "Send", style: .default) { [weak self] _ in
+        let sendAction = UIAlertAction(title: LanguageManager.shared.localizedString(for: "Send"), style: .default) { [weak self] _ in
             if let email = alertController.textFields?.first?.text, !email.isEmpty {
                 self?.sendPasswordReset(to: email)
             }
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: LanguageManager.shared.localizedString(for: "Cancel"), style: .cancel, handler: nil)
         alertController.addAction(sendAction)
         alertController.addAction(cancelAction)
         present(alertController, animated: true, completion: nil)
@@ -131,10 +154,11 @@ class LoginViewController: UIViewController {
         Auth.auth().sendPasswordReset(withEmail: email) { [weak self] error in
             if let error = error {
                 print("Error sending password reset: \(error.localizedDescription)")
-                self?.showAlert(title: "Error", message: error.localizedDescription)
+                self?.showAlert(title: LanguageManager.shared.localizedString(for: "Error"), message: error.localizedDescription)
                 return
             }
-            self?.showAlert(title: "Success", message: "Password reset email sent.")
+            self?.showAlert(title: LanguageManager.shared.localizedString(for: "Success"),
+                            message: LanguageManager.shared.localizedString(for: "PasswordResetEmailSent"))
         }
     }
 
@@ -166,7 +190,7 @@ class LoginViewController: UIViewController {
 
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: LanguageManager.shared.localizedString(for: "OK"), style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 

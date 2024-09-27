@@ -51,7 +51,41 @@
 		01C4CD312C9EEB4C0059DE1C /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD302C9EEB4C0059DE1C /* AlamofireDynamic */; };
 		01C4CD342C9F200E0059DE1C /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = 01C4CD332C9F200E0059DE1C /* AlamofireImage */; };
 		01C67DD12CA06E7600655E35 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C67DD02CA06E7600655E35 /* WebViewController.swift */; };
+		01CF302C2CA68FD400D5CF81 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01CF302E2CA68FD400D5CF81 /* Localizable.strings */; };
+		01CF30312CA696CB00D5CF81 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CF30302CA696CB00D5CF81 /* LanguageManager.swift */; };
+		01CF30392CA6AD7400D5CF81 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01CF30382CA6AD7400D5CF81 /* WidgetKit.framework */; };
+		01CF303B2CA6AD7400D5CF81 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01CF303A2CA6AD7400D5CF81 /* SwiftUI.framework */; };
+		01CF303E2CA6AD7400D5CF81 /* GameHubDealsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CF303D2CA6AD7400D5CF81 /* GameHubDealsBundle.swift */; };
+		01CF30402CA6AD7400D5CF81 /* GameHubDealsLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CF303F2CA6AD7400D5CF81 /* GameHubDealsLiveActivity.swift */; };
+		01CF30422CA6AD7400D5CF81 /* GameHubDeals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CF30412CA6AD7400D5CF81 /* GameHubDeals.swift */; };
+		01CF30442CA6AD7400D5CF81 /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CF30432CA6AD7400D5CF81 /* AppIntent.swift */; };
+		01CF30462CA6AD7700D5CF81 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01CF30452CA6AD7700D5CF81 /* Assets.xcassets */; };
+		01CF304A2CA6AD7700D5CF81 /* GameHubDealsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 01CF30362CA6AD7400D5CF81 /* GameHubDealsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		01CF30482CA6AD7700D5CF81 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 01C4CCC82C9EBD660059DE1C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01CF30352CA6AD7400D5CF81;
+			remoteInfo = GameHubDealsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		01CF304E2CA6AD7700D5CF81 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				01CF304A2CA6AD7700D5CF81 /* GameHubDealsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0184549C2CA079BC00E63F40 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
@@ -72,6 +106,18 @@
 		01C4CD242C9ECE570059DE1C /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		01C4CD2B2C9ED83E0059DE1C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		01C67DD02CA06E7600655E35 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		01CF302D2CA68FD400D5CF81 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		01CF302F2CA6924900D5CF81 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Localizable.strings; sourceTree = "<group>"; };
+		01CF30302CA696CB00D5CF81 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
+		01CF30362CA6AD7400D5CF81 /* GameHubDealsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GameHubDealsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		01CF30382CA6AD7400D5CF81 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		01CF303A2CA6AD7400D5CF81 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		01CF303D2CA6AD7400D5CF81 /* GameHubDealsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameHubDealsBundle.swift; sourceTree = "<group>"; };
+		01CF303F2CA6AD7400D5CF81 /* GameHubDealsLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameHubDealsLiveActivity.swift; sourceTree = "<group>"; };
+		01CF30412CA6AD7400D5CF81 /* GameHubDeals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameHubDeals.swift; sourceTree = "<group>"; };
+		01CF30432CA6AD7400D5CF81 /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
+		01CF30452CA6AD7700D5CF81 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		01CF30472CA6AD7700D5CF81 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +156,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		01CF30332CA6AD7400D5CF81 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01CF303B2CA6AD7400D5CF81 /* SwiftUI.framework in Frameworks */,
+				01CF30392CA6AD7400D5CF81 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -117,6 +172,8 @@
 			isa = PBXGroup;
 			children = (
 				01C4CCD22C9EBD660059DE1C /* GameHub */,
+				01CF303C2CA6AD7400D5CF81 /* GameHubDeals */,
+				01CF30372CA6AD7400D5CF81 /* Frameworks */,
 				01C4CCD12C9EBD660059DE1C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -125,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				01C4CCD02C9EBD660059DE1C /* GameHub.app */,
+				01CF30362CA6AD7400D5CF81 /* GameHubDealsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -149,8 +207,32 @@
 				01C67DD02CA06E7600655E35 /* WebViewController.swift */,
 				0184549C2CA079BC00E63F40 /* ThemeManager.swift */,
 				0184549E2CA07EBC00E63F40 /* IGDBService.swift */,
+				01CF302E2CA68FD400D5CF81 /* Localizable.strings */,
+				01CF30302CA696CB00D5CF81 /* LanguageManager.swift */,
 			);
 			path = GameHub;
+			sourceTree = "<group>";
+		};
+		01CF30372CA6AD7400D5CF81 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				01CF30382CA6AD7400D5CF81 /* WidgetKit.framework */,
+				01CF303A2CA6AD7400D5CF81 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		01CF303C2CA6AD7400D5CF81 /* GameHubDeals */ = {
+			isa = PBXGroup;
+			children = (
+				01CF303D2CA6AD7400D5CF81 /* GameHubDealsBundle.swift */,
+				01CF303F2CA6AD7400D5CF81 /* GameHubDealsLiveActivity.swift */,
+				01CF30412CA6AD7400D5CF81 /* GameHubDeals.swift */,
+				01CF30432CA6AD7400D5CF81 /* AppIntent.swift */,
+				01CF30452CA6AD7700D5CF81 /* Assets.xcassets */,
+				01CF30472CA6AD7700D5CF81 /* Info.plist */,
+			);
+			path = GameHubDeals;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -163,10 +245,12 @@
 				01C4CCCC2C9EBD660059DE1C /* Sources */,
 				01C4CCCD2C9EBD660059DE1C /* Frameworks */,
 				01C4CCCE2C9EBD660059DE1C /* Resources */,
+				01CF304E2CA6AD7700D5CF81 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				01CF30492CA6AD7700D5CF81 /* PBXTargetDependency */,
 			);
 			name = GameHub;
 			packageProductDependencies = (
@@ -203,6 +287,23 @@
 			productReference = 01C4CCD02C9EBD660059DE1C /* GameHub.app */;
 			productType = "com.apple.product-type.application";
 		};
+		01CF30352CA6AD7400D5CF81 /* GameHubDealsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01CF304B2CA6AD7700D5CF81 /* Build configuration list for PBXNativeTarget "GameHubDealsExtension" */;
+			buildPhases = (
+				01CF30322CA6AD7400D5CF81 /* Sources */,
+				01CF30332CA6AD7400D5CF81 /* Frameworks */,
+				01CF30342CA6AD7400D5CF81 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GameHubDealsExtension;
+			productName = GameHubDealsExtension;
+			productReference = 01CF30362CA6AD7400D5CF81 /* GameHubDealsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -216,6 +317,9 @@
 					01C4CCCF2C9EBD660059DE1C = {
 						CreatedOnToolsVersion = 15.2;
 					};
+					01CF30352CA6AD7400D5CF81 = {
+						CreatedOnToolsVersion = 15.2;
+					};
 				};
 			};
 			buildConfigurationList = 01C4CCCB2C9EBD660059DE1C /* Build configuration list for PBXProject "GameHub" */;
@@ -225,6 +329,7 @@
 			knownRegions = (
 				en,
 				Base,
+				th,
 			);
 			mainGroup = 01C4CCC72C9EBD660059DE1C;
 			packageReferences = (
@@ -238,6 +343,7 @@
 			projectRoot = "";
 			targets = (
 				01C4CCCF2C9EBD660059DE1C /* GameHub */,
+				01CF30352CA6AD7400D5CF81 /* GameHubDealsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -247,10 +353,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01CF302C2CA68FD400D5CF81 /* Localizable.strings in Resources */,
 				01C4CCE02C9EBD690059DE1C /* LaunchScreen.storyboard in Resources */,
 				01C4CD2C2C9ED83E0059DE1C /* GoogleService-Info.plist in Resources */,
 				01C4CCDD2C9EBD690059DE1C /* Assets.xcassets in Resources */,
 				01C4CCDB2C9EBD660059DE1C /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01CF30342CA6AD7400D5CF81 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01CF30462CA6AD7700D5CF81 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +377,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01C4CD252C9ECE570059DE1C /* SignupViewController.swift in Sources */,
+				01CF30312CA696CB00D5CF81 /* LanguageManager.swift in Sources */,
 				01C4CD1B2C9EC7910059DE1C /* HomeViewController.swift in Sources */,
 				01C4CCD42C9EBD660059DE1C /* AppDelegate.swift in Sources */,
 				0184549F2CA07EBC00E63F40 /* IGDBService.swift in Sources */,
@@ -276,7 +392,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		01CF30322CA6AD7400D5CF81 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01CF30402CA6AD7400D5CF81 /* GameHubDealsLiveActivity.swift in Sources */,
+				01CF30442CA6AD7400D5CF81 /* AppIntent.swift in Sources */,
+				01CF303E2CA6AD7400D5CF81 /* GameHubDealsBundle.swift in Sources */,
+				01CF30422CA6AD7400D5CF81 /* GameHubDeals.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		01CF30492CA6AD7700D5CF81 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 01CF30352CA6AD7400D5CF81 /* GameHubDealsExtension */;
+			targetProxy = 01CF30482CA6AD7700D5CF81 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		01C4CCD92C9EBD660059DE1C /* Main.storyboard */ = {
@@ -295,6 +430,15 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		01CF302E2CA68FD400D5CF81 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				01CF302D2CA68FD400D5CF81 /* en */,
+				01CF302F2CA6924900D5CF81 /* th */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -303,6 +447,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -366,6 +511,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -420,6 +566,7 @@
 		01C4CCE52C9EBD690059DE1C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -427,6 +574,8 @@
 				DEVELOPMENT_TEAM = BL46T863TY;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GameHub/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take a profile picture.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to set your profile picture.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -448,6 +597,7 @@
 		01C4CCE62C9EBD690059DE1C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -455,6 +605,8 @@
 				DEVELOPMENT_TEAM = BL46T863TY;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GameHub/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take a profile picture.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to set your profile picture.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -467,6 +619,60 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = kris.GameHub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		01CF304C2CA6AD7700D5CF81 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BL46T863TY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GameHubDeals/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GameHubDeals;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kris.GameHub.GameHubDeals;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		01CF304D2CA6AD7700D5CF81 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BL46T863TY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GameHubDeals/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GameHubDeals;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kris.GameHub.GameHubDeals;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -490,6 +696,15 @@
 			buildConfigurations = (
 				01C4CCE52C9EBD690059DE1C /* Debug */,
 				01C4CCE62C9EBD690059DE1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01CF304B2CA6AD7700D5CF81 /* Build configuration list for PBXNativeTarget "GameHubDealsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01CF304C2CA6AD7700D5CF81 /* Debug */,
+				01CF304D2CA6AD7700D5CF81 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
