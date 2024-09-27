@@ -19,7 +19,7 @@ class SignupViewController: UIViewController {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "AppLogo")
+        imageView.image = UIImage(named: "Game-Hub")
         return imageView
     }()
 

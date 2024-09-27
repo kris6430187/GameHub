@@ -22,7 +22,7 @@ class LoginViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         // Set your app logo here
-        imageView.image = UIImage(named: "AppLogo")
+        imageView.image = UIImage(named: "Game-Hub")
         return imageView
     }()
 
@@ -85,6 +85,23 @@ class LoginViewController: UIViewController {
         button.layer.cornerRadius = 8
         button.addTarget(self, action: #selector(googleSignInTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        
+        let googleIcon = UIImageView(image: UIImage(named: "google_logo"))
+        googleIcon.contentMode = .scaleAspectFit
+        googleIcon.translatesAutoresizingMaskIntoConstraints = false
+        button.addSubview(googleIcon)
+        
+        NSLayoutConstraint.activate([
+            googleIcon.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 12),
+            googleIcon.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            googleIcon.widthAnchor.constraint(equalToConstant: 24),
+            googleIcon.heightAnchor.constraint(equalToConstant: 24)
+        ])
+        
+
+        button.contentHorizontalAlignment = .center
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        
         return button
     }()
 
@@ -126,8 +143,8 @@ class LoginViewController: UIViewController {
 
             logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
             logoImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            logoImageView.widthAnchor.constraint(equalToConstant: 120),
-            logoImageView.heightAnchor.constraint(equalToConstant: 120),
+            logoImageView.widthAnchor.constraint(equalToConstant: 200),
+            logoImageView.heightAnchor.constraint(equalToConstant: 200),
 
             emailTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 40),
             emailTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
