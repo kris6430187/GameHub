@@ -30,6 +30,47 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
         
         navigationItem.rightBarButtonItems = [refreshButton, forwardButton, backButton]
+        applyTheme()
+        
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            applyTheme() 
+        }
+    }
+    
+    func applyTheme() {
+        if traitCollection.userInterfaceStyle == .dark {
+            webView.backgroundColor = .black
+            customizeNavigationBar(for: .dark)
+        } else {
+            webView.backgroundColor = .white
+            customizeNavigationBar(for: .light)
+        }
+    }
+    
+    private func customizeNavigationBar(for theme: UIUserInterfaceStyle) {
+        if let navigationBar = navigationController?.navigationBar {
+            let appearance = UINavigationBarAppearance()
+            switch theme {
+            case .dark:
+                appearance.backgroundColor = .black
+                appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+                appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+            case .light, .unspecified:
+                appearance.backgroundColor = .white
+                appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
+                appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+            @unknown default:
+                break
+            }
+            navigationBar.standardAppearance = appearance
+            navigationBar.scrollEdgeAppearance = appearance
+            navigationBar.compactAppearance = appearance
+        }
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

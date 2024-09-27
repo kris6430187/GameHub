@@ -65,7 +65,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     private let themeLabel: UILabel = {
         let label = UILabel()
-        label.text = "Dark Mode"
+        label.text = "Light Mode"
         label.font = UIFont.systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -217,7 +217,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
 
     private func setupThemeSwitch() {
-        themeSwitch.isOn = ThemeManager.shared.currentTheme == .dark
+        themeSwitch.isOn = ThemeManager.shared.currentTheme == .light
     }
 
     private func loadUserProfile() {
@@ -294,7 +294,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
 
     @objc private func themeSwitchToggled() {
-        ThemeManager.shared.currentTheme = themeSwitch.isOn ? .dark : .light
+        ThemeManager.shared.currentTheme = themeSwitch.isOn ? .light : .dark
     }
 
     @objc private func languageSelectionChanged() {
